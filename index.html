@@ -1,482 +1,345 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BIG EV | CARD GENERATOR 3.0</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap");
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M17 | CARD GENERATOR 2.0</title>
-</head>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", sans-serif;
+      }
 
-<body>
-    <style type="text/css">
-        @import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+128+Text&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap');
+      body {
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            text-decoration: none;
-            font-family: 'Roboto', sans-serif;
-        }
+      /* ====== FORM ====== */
 
+      .form {
+        width: 700px;
+        background: linear-gradient(to bottom, #dfdbe2, #e7e5e9);
+        margin: 10px;
+        border-radius: 8px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .form-title{
+        text-align: center;
+        border: 2px solid #00cece;
+        background-color: #00cece24;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 6px;
+        display:flex;
+        flex-direction: column;
+        gap:10px;
+      }
+
+      .form label {
+        color: #0b0b0b;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .input-adm {
+        height: 22px;
+        padding: 4px;
+        border-radius: 3px;
+        border: none;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+      }
+
+      .column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .btn {
+        display: flex;
+        gap: 10px;
+      }
+
+      button {
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        border-radius: 6px;
+        transition: all 0.25s ease-in-out;
+      }
+
+      button:hover {
+        transform: translateY(-4px);
+      }
+
+      .btn-add {
+        background-color: #2702f9;
+        color: #fff;
+      }
+
+      .btn-print {
+        background-color: #014621;
+        color: #e8e3e8;
+      }
+
+      .btn-clear {
+        background-color: #bb0000;
+        color: #fff;
+      }
+
+      /* ====== CARD ====== */
+
+      .content {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .card {
+        width: 680px; /* Ajustado para caber na largura do A4 com margens */
+        height: 190px; /* Reduzido levemente para garantir 4 por página */
+        display: flex;
+        border: 1px solid #000;
+        page-break-inside: avoid; /* Evita que o card quebre entre duas páginas */
+        margin-bottom: 15px;
+      }
+
+      .card-front,
+      .card-back {
+        width: 50%;
+        padding: 10px;
+      }
+
+      .card-front {
+        border-right: 1px solid #000;
+      }
+
+      .card-front-header {
+        background: linear-gradient(263deg, #ffffff 35%, #9db8dd 100%);
+        color: #211f1f;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 5px;
+      }
+
+      .card-front-body {
+        margin-top: 20px;
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .card-back {
+        font-size: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .card-back .direitos {
+        text-align: justify;
+        font-size: 9px;
+        line-height: 1.2;
+        margin-bottom: 5px;
+      }
+
+      .direitos-texto {
+        font-size: 9px;
+        text-align: justify;
+        line-height: 1.1;
+      }
+
+      .qrcode-container {
+        margin-top: 5px;
+      }
+
+      /* ====== PRINT ====== */
+
+      @page {
+        size: A4;
+        margin: 5mm; /* sangria */
+      }
+
+      @media print {
         body {
-            background-color: #ffffff;
-            color: rgb(29, 27, 27);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+          margin: 0;
         }
-
-        .cabecalho {
-            border: 1px solid #39016b;
-            width: 100vw;
-            text-align: center;
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            gap:5px;
-            cursor: pointer;
-            text-decoration: none;
-            background: linear-gradient(to bottom, #45027f 5%, #39016b 100%);
-            box-shadow: inset 0px 1px 0px 0px #b77deb;
-            color: #fff;
-            text-shadow: 1px 1px 1px #300259;
-            padding: 6px 30px;
-            font-size: 12px;
-            transition: 400ms;
-        }
-
-        .cabecalho h1 {
-            font-size: 16px;
-            text-shadow: 1px 1px #470185;
-            font-weight: 900;
-            color: #fdf6ff;
-        }
-
-        .cabecalho p {
-            font-size: 11px;
-            color: #fff;
-            text-shadow: 1px 1px #470185;
-        }
-
         .form {
-            display: flex;
-            width: 40vw;
-            padding-top: 20px;
-            padding-bottom: 20px;
-            padding-left: 500px;
-            padding-right: 500px;
-            justify-content: center;
-            flex-direction: column;
-            flex-wrap: wrap;
-            gap: 10px;
-            background: linear-gradient(to bottom, #56039f 5%, #470185 100%);
-            box-shadow: inset 0px 1px 0px 0px #b77deb;
-            border: 1px solid #d0d0d0;
+          display: none;
         }
-
-        .form label {
-            color: #ffffff;
-            text-shadow: 1px 1px 1px #2e0353;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .form .input-adm {
-            border: none;
-            width: auto;
-            height: 20px;
-            outline: none;
-            padding: 3px;
-            padding-left: 5px;
-            border-radius: 3px;
-            color: #1b0132;
-            background-color: #cda0f4;
-        }
-
-        .form .input-adm:focus {
-            background-color: #dfc3f7;
-        }
-
-        .form .input-adm::placeholder {
-            color: #2d0450;
-        }
-
-
-        .form .btn {
-            display: flex;
-            gap: 10px;
-        }
-
-        .form .btn .btn-submit {
-            border: 1px solid #02883c;
-            border-radius: 4px;
-            display: inline-block;
-            cursor: pointer;
-            text-decoration: none;
-            background: linear-gradient(to bottom, #04bd54 5%, #02883c 100%);
-            box-shadow: inset 0px 1px 0px 0px #b5fcd4;
-            color: #fff;
-            text-shadow: 1px 1px 1px #003617;
-            padding: 6px 30px;
-            font-size: 12px;
-            transition: 400ms;
-        }
-
-        .form .btn-limpar {
-            border: 1px solid #cf8c1a;
-            border-radius: 4px;
-            display: inline-block;
-            cursor: pointer;
-            text-decoration: none;
-            background: linear-gradient(to bottom, #f6bf60 5%, #eaa632 100%);
-            box-shadow: inset 0px 1px 0px 0px #fbf4e7;
-            color: #000;
-            text-shadow: 1px 1px 1px #f6bf60;
-            padding: 6px 30px;
-            font-size: 12px;
-            transition: 400ms;
-        }
-
-        .btn-imprimir{
-            border:1px solid #44027d;
-            border-radius:4px;
-            display:inline-block;
-            cursor:pointer;
-            text-decoration:none;
-            text-shadow: 1px 1px 1px #1b0132;
-            background: linear-gradient(to bottom, #56039f 5%, #470185 100%);
-            box-shadow:inset 0px 1px 0px 0px #ffffff;
-            color:rgb(241, 233, 233);
-            padding: 6px 30px;
-            font-size: 12px;
-            transition: 400ms;
-        }
-
-        .form .row {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap:10px;
-            justify-content: space-between;
-        }
-
-
-        .form .column {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .content {
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            width: 100vw;
-            margin-top: 20px;
-            padding:5px;
-        }
-
         .card {
-            display: none;
-            width: 700px;
-            height: 200px;
-            background-color: #e9e9e9;
-            border: 1px solid #171717;
-            color: #000000;
-            font-size: 14px;
-            font-weight: 300;
-            border-radius: 4px;
-        }
-
-        .card-front {
-            width: 50%;
-            padding: 10px;
-            border-right: 1px solid #0d0707;
-        }
-
-        .card-front-text {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .card-front-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-weight: 400;
-        }
-
-        .card-front-body {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            font-size: 12px;
-            margin-top: 30px;
-        }
-
-        .card-front-text .card-front-titulo {
-            font-size: 13px;
-        }
-
-        .card-front-text .card-front-subtitulo {
-            font-size: 12px;
-            color: #f0dfff;
-
-        }
-
-        .card-back {
-            width: 50%;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            color: rgb(34, 34, 36);
-            background-color: #e7e7e7;
-        }
-
-        .card-back-text {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-        }
-
-        .card-back-vcode {
-            text-align: center;
-            font-size: 11px;
-        }
-
-        .card-back-text p {
-            font-weight: 500;
-        }
-
-        .vcode {
-            font-family: 'Libre Barcode 128 Text', cursive;
-            font-size: 40px;
-            color: #1f1f20;
-        }
+          border: 1px dotted #666;
+        } /* Pontilhado para facilitar o corte */
+      }
     </style>
-    <header class="cabecalho" id="header">
-        <h1>M17 | CARD GENERATOR 2.0</h1>
-        <p>Todos os direitos reservados - M17 TECNOLOGIA</p>
-        <p>( 75 ) 99993 - 7182 | m17tecnologia@gmail.com</p>
-    </header>
+  </head>
+
+  <body>
     <section class="form" id="form">
+        <div class="form-title">
+        <h1>BIG EV | CARD GENERATOR</h1>
+        <p>Gerador de Carteirinhas de Prioridade</p>
+        </div>
+      <div class="column">
+        <label>LOGO (URL)</label>
+        <input class="input-adm" id="logo" />
+      </div>
+
+      <div class="column">
+        <label>NÚMERO DA LEI</label>
+        <input class="input-adm" id="lei" />
+      </div>
+
+      <div class="column">
+        <label>NOME COMPLETO</label>
+        <input class="input-adm" id="nome" />
+      </div>
+
+      <div class="row">
         <div class="column">
-            <label for="nome">NOME COMPLETO:</label>
-            <input class="input-adm" type="text" id="nome" value="" name="nome" placeholder="NOME COMPLETO DO PACIENTE"
-                required></input>
+          <label>CPF</label>
+          <input class="input-adm" id="cpf" maxlength="14" />
         </div>
-        <div class="row">
-            <div class="column">
-                <label for="rg">RG:</label>
-                <input class="input-adm" type="text" id="rg" value="" name="rg" placeholder="Exemplo: 99999999-99"
-                    maxlength="11" required></input>
-            </div>
-            <div class="column">
-                <label for="cpf">CPF:</label>
-                <input class="input-adm" type="text" id="cpf" value="" name="cpf" placeholder="Exemplo: 999.999.999-99"
-                    maxlength="14" required></input>
-            </div>
-            <div class="column">
-                <label for="dn">DATA DE NASCIMENTO:</label>
-                <input class="input-adm" type="text" id="dn" value="" name="dn" placeholder="Exemplo: 01/01/2001"
-                    required></input>
-            </div>
+        <div class="column">
+          <label>DATA NASCIMENTO</label>
+          <input class="input-adm" id="dn" maxlength="10" />
         </div>
-        <div class="btn" id="btn" name="btn">
-            <button class="btn-submit" onclick="addItem();">GERAR CARTEIRINHA</button>
-            <button class="btn-limpar" onclick="limpar();">LIMPAR FORMULÁRIO</button>
-        </div>
-    </section>
-    <section class="content" id="content">
-        <!--- Conteúdo dinâmico --->
+      </div>
+
+      <div class="btn">
+        <button onclick="addItem()" class="btn-add">GERAR CARTEIRINHA</button>
+        <button onclick="window.print()" class="btn-print">
+          IMPRIMIR / PDF
+        </button>
+        <button onclick="clearCards()" class="btn-clear">LIMPAR TUDO</button>
+      </div>
     </section>
 
-    <section style="padding-top:10px;">
-        <button class="btn-imprimir" id="btn-imprimir" style="width: 150px; height:25px; display: none;"
-            onclick="cont()">Imprimir</button>
-    </section>
+    <section class="content" id="content"></section>
 
-    <script type="text/javascript">
+    <script>
+      function maskCPF(v) {
+        v = v.replace(/\D/g, "").slice(0, 11);
+        v = v
+          .replace(/(\d{3})(\d)/, "$1.$2")
+          .replace(/(\d{3})(\d)/, "$1.$2")
+          .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        return v;
+      }
 
+      function validarCPF(cpf) {
+        cpf = cpf.replace(/\D/g, "");
+        if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+        let s = 0;
+        for (let i = 0; i < 9; i++) s += cpf[i] * (10 - i);
+        let d1 = ((s * 10) % 11) % 10;
+        s = 0;
+        for (let i = 0; i < 10; i++) s += cpf[i] * (11 - i);
+        let d2 = ((s * 10) % 11) % 10;
+        return d1 == cpf[9] && d2 == cpf[10];
+      }
 
-        function addItem(valor) {
+      cpf.oninput = (e) => (e.target.value = maskCPF(e.target.value));
 
-            var dataatual = new Date();
-            var dia = String(dataatual.getDate()).padStart(2, '0');
-            var mes = String(dataatual.getMonth() + 1).padStart(2, '0');
-            var ano = dataatual.getFullYear();
-            var dataEmissao = dia + '/' + mes + '/' + ano;
+      dn.oninput = (e) => {
+        let v = e.target.value.replace(/\D/g, "").slice(0, 8);
+        v = v.replace(/(\d{2})(\d)/, "$1/$2").replace(/(\d{2})(\d)/, "$1/$2");
+        e.target.value = v;
+      };
 
-            const generateRandomString = (num) => {
-                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
-                let result1 = ' ';
-                const charactersLength = characters.length;
-                for (let i = 0; i < num; i++) {
-                    result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
-                }
+      function clearCards() {
+        if (confirm("Deseja remover todas as carteirinhas geradas?")) {
+          document.getElementById("content").innerHTML = "";
+        }
+      }
 
-                return result1;
-            }
-
-            var nome = document.querySelector('#nome').value;
-            var rg = document.querySelector('#rg').value;
-            var cpf = document.querySelector('#cpf').value;
-            var dn = document.querySelector('#dn').value;
-
-            if (nome === '' || rg === '' || cpf === '' || dn === '') {
-                alert('Existem campos obrigatórios vazios!')
-                return
-            }
-
-            var vcode = generateRandomString(15);
-            var dtemi = dataEmissao;
-
-            add_li(nome, rg, cpf, dn, vcode, dtemi);
-
-            let el = document.getElementById('btn-imprimir');
-
-            el.style.cssText = 'display: block; width: 150px; height:25px;'
-
-            let card = document.getElementById('card');
-
-            card.style.cssText = 'display: flex';
-
-
+      function addItem() {
+        // Validação de inputs
+        if (!nome.value || !cpf.value || !dn.value) {
+          alert("Por favor, preencha todos os campos.");
+          return;
         }
 
-        function cont() {
-
-            let form = document.getElementById('form');
-
-            let header = document.getElementById('header');
-
-            let el = document.getElementById('btn-imprimir');
-
-            form.style.cssText = 'display: none';
-            header.style.cssText = 'display:none';
-            el.style.cssText = 'display: none;';
-
-            window.print();
-
+        if (!validarCPF(cpf.value)) {
+          alert("CPF inválido");
+          return;
         }
 
-        function add_li(nome, rg, cpf, dn, vcode, dtemi) {
+        // Criar o container do card
+        const card = document.createElement("div");
+        card.className = "card";
 
-            // Cria os elementos
+        // Montar o HTML (removendo IDs e usando classes para evitar conflitos)
+        card.innerHTML = `
+    <div class="card-front">
+      <div class="card-front-header">
+        <img src="${
+          logo.value
+        }" width="50" style="border-radius:3px;" onerror="this.src='https://via.placeholder.com/50?text=LOGO'">
+        <div>
+          <strong style="font-size: 14px;">CARTEIRINHA DE PRIORIDADE</strong><br>
+          <small>${lei.value || "Lei Municipal/Federal"}</small>
+        </div>
+      </div>
+      <div class="card-front-body">
+        <p><strong>NOME:</strong> ${nome.value.toUpperCase()}</p>
+        <p><strong>CPF:</strong> ${cpf.value}</p>
+        <p><strong>NASCIMENTO:</strong> ${dn.value}</p>
+      </div>
+    </div>
+    <div class="card-back">
+      <div class="direitos-texto">
+        <strong>DIREITOS E BENEFÍCIOS:</strong><br>
+        O titular deste documento possui direito a atendimento prioritário imediato e diferenciado em repartições públicas, instituições financeiras e estabelecimentos comerciais, conforme previsto na legislação vigente.
+      </div>
+      <div class="qr-target" style="margin-top:5px; display: flex; justify-content: center;"></div>
+      <p style="font-size: 8px; margin-top: 5px;">Válido em todo território nacional com documento oficial com foto.</p>
+    </div>
+    `;
 
-            var content = document.querySelector('#content');
-            var card = document.createElement('div');
-            var card_front = document.createElement('div');
-            var card_front_text = document.createElement('div');
-            var card_front_header = document.createElement('div');
-            var card_front_header_logo = document.createElement('div');
-            var card_front_header_titulos = document.createElement('div');
-            var card_front_body = document.createElement('div');
-            var card_back = document.createElement('div');
-            var card_back_text = document.createElement('div');
-            var card_back_descricao = document.createElement('div');
-            var card_back_vcode = document.createElement('div');
+        // Adicionar ao conteúdo
+        const content = document.getElementById("content");
+        content.appendChild(card);
 
-            // Estiliza os elementos
+        // Gerar o QR Code na div 'qr-target' deste card específico
+        const qrContainer = card.querySelector(".qr-target");
 
-            card.style.cssText =
-                'display: flex; width: 700px; height: 200px; background-color: #EFE3F4; border:1px solid #171717; color: #000000; font-size:14px; font-weight: 300; border-radius: 1px';
-
-            card_front.style.cssText =
-                'width: 50%; border-right: 1px solid #0d0707;'
-
-            card_front_text.style.cssText =
-                'display: flex; flex-direction: column; gap:3px; padding:5px'
-
-            card_front_header.style.cssText =
-                'display: flex; align-items: center; width: auto; justify-content: space-around; font-weight: 400; background-color: #650076; color: #fae3fd; padding:3px; border-radius:2px;'
-
-            card_front_header_logo.style.cssText =
-                'width:110px;'
-
-            card_front_header_titulos.style.cssText =
-                'font-size:12px;'
-
-            card_front_body.style.cssText =
-                'display: flex; flex-direction: column; gap:5px; font-size:12px; margin-top:20px;'
-
-            card_back.style.cssText =
-                'width: 50%; padding:15px; display: flex; flex-direction: column; gap:12px; color: rgb(34, 34, 36); background-color: #EFE3F4;'
-
-            card_back_text.style.cssText =
-                'display: flex; justify-content: space-between; font-size: 11px;'
-
-            card_back_descricao.style.cssText =
-                'word-wrap: break-word; font-size:12px; height: 80px;'
-
-            card_back_vcode.style.cssText =
-                'text-align: center; font-size:11px;'
-
-            // Insere os elementos
-
-            content.appendChild(card);
-
-            card.appendChild(card_front);
-
-            card.appendChild(card_back);
-
-            card_back.appendChild(card_back_text);
-
-            card_back.appendChild(card_back_descricao);
-
-            card_back.appendChild(card_back_vcode);
-
-            card_front.appendChild(card_front_text);
-
-            card_front_text.appendChild(card_front_header);
-
-            card_front_text.appendChild(card_front_body);
-
-            card_front_header.appendChild(card_front_header_logo);
-
-            card_front_header.appendChild(card_front_header_titulos);
-
-            // Insere conteúdo nos elementos
-
-            card_front_header_logo.innerHTML = '<img src="https://uploaddeimagens.com.br/images/004/124/306/original/logopref.png?1667929164" alt="logopref" width="110px" />';
-
-            card_front_header_titulos.innerHTML = '<p style="font-size:13px; padding:3px; font-weight:600;">CARTEIRINHA DE PRIORIDADE<p><p style="font-size:11px; font-weight:600; padding:3px;">PORTADOR DE FIBROMIALGIA</p>'
-
-            card_front_body.innerHTML =
-                '<p style="padding:2px; color:#68007c; font-weight:500;">NOME: <span style="color:#000000; font-weight:500" class="cnome" id="cnome" name="cnome">' + nome + '</span></p>'
-                + '<p style="padding:2px; color:#68007c; font-weight:500;">DATA DE NASCIMENTO: <span style="color:#000000;" class="cdn" id="cdn" name="cdn">' + dn + '</span></p>'
-                + '<p style="padding:2px; color:#68007c; font-weight:500; display:flex; gap:5px;">RG:<span style="color:#000000;" class="crg" id="crg" name="crg">' + rg + '</span> CPF: <span style="color:#000000;" class="ccpf" id="ccpf" name="ccpf">' + cpf + '</span></p>'
-                + '<p style=" font-size:9px; font-weight:500; margin-top:12px; width:70%;"> - VÁLIDO SOMENTE COM A APRESENTAÇÃO DE DOCUMENTO DE IDENTIFICAÇÃO COM FOTO.</p>'
-
-            card_back_text.innerHTML =
-                '<p style="color:#68007c; font-weight:500;">DATA DE EMISSÃO: <span style="color:#000000; font-weight:400;" class="dtemi" id="dtemi" name="dtemi">' + dtemi + '</span></p>'
-
-            card_back_descricao.innerHTML =
-                '<p>Pessoas portadoras de Fibromialgia possuem os seguintes direitos garantidos de acordo com a Lei Municipal nº 340/2022:</p><br/><p style="text-align:center;"><ul style="list-style:none; font-weight:500; color:#68007c;"><li>FILAS PREFERENCIAIS</li><li>ESTACIONAMENTO PREFERENCIAL</li></ul></p>'
-
-            card_back_vcode.innerHTML =
-                '<p style="color:#68007c;">CÓDIGO DE VERIFICAÇÃO:</p><span style="font-size:34px;" class="vcode" id="vcode" name="vcode">' + vcode + '</span>'
+        if (typeof QRCode !== "undefined") {
+          new QRCode(qrContainer, {
+            text: `TITULAR: ${nome.value.toUpperCase()} | CPF: ${
+              cpf.value
+            } | LEI: ${lei.value}`,
+            width: 75,
+            height: 75,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.M,
+          });
+        } else {
+          alert("Aguarde o carregamento da página ou verifique sua internet.");
         }
-
-        function limpar() {
-            var nome = document.querySelector('#nome');
-            var rg = document.querySelector('#rg');
-            var cpf = document.querySelector('#cpf');
-            var dn = document.querySelector('#dn');
-
-            nome.value = '';
-            rg.value = '';
-            cpf.value = '';
-            dn.value = '';
-        }
-
+      }
     </script>
-</body>
-
+  </body>
 </html>
